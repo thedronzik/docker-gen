@@ -6,7 +6,7 @@ server {
 	return 503;
 }
 
-{{ range $upstream, $containers := groupForNginx $ "Env.VIRTUAL_HOSTS" "," }}
+{{ range $upstream, $containers := groupForNginx $ "Env.VIRTUAL_HOST" "," }}
 
     {{ $hp := split $upstream ":" }}
     {{ $host := index $hp 0 }}
