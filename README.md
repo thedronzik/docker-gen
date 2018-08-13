@@ -1,3 +1,13 @@
+sudo curl -O https://storage.googleapis.com/golang/go1.8.linux-amd64.tar.gz
+sudo tar -zxvf go1.8.linux-amd64.tar.gz -C /usr/local/
+rm -f go1.8.linux-amd64.tar.gz
+sudo vi ~/.profile
+
+export GOROOT=/usr/local/go
+export GOPATH=/mnt/d/REPOS/go
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+
 docker-gen
 =====
 

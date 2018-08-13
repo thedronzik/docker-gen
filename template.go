@@ -57,7 +57,6 @@ func generalizedGroupBy(funcName string, entries interface{}, getValue func(inte
 	if err != nil {
 		return nil, err
 	}
-
 	groups := make(map[string][]interface{})
 	for i := 0; i < entriesVal.Len(); i++ {
 		v := reflect.Indirect(entriesVal.Index(i)).Interface()
@@ -77,6 +76,60 @@ func generalizedGroupByKey(funcName string, entries interface{}, key string, add
 		return deepGet(v, key), nil
 	}
 	return generalizedGroupBy(funcName, entries, getKey, addEntry)
+}
+
+func splitC (s string, sep string, count int) (split []string) {
+	split = strings.Split(s, sep)
+
+	for i := len(split); i < count; i++ {
+		split = append(split, "")
+	}
+	return split
+}
+
+
+
+func groupForNginx(entries interface{}, key, sep string) (map[string][]interface{}, error) {
+	return generalizedGroupByKey("groupByMulti", entries, key, func(groups map[string][]interface{}, value interface{}, v interface{}) {
+		items := strings.Split(value.(string), sep)
+		for _, item := range items {
+			s := strings.Split(item, ":")
+			rc := v.(RuntimeContainer)
+
+			fmt.Println(s)
+			fmt.Println(rc.Addresses)
+			//если указан только порт биндинга
+			if len(s) == 2 {
+				s = append(s, s[1])
+			}
+
+			// если указаны все 3 значения, проверяем 3й параметр в списке expose
+			if len(s) >= 3 {
+				for _, address := range rc.Addresses {
+					if address.Port == s[2] {
+						val := map [string] interface{} {
+							"container": v,
+							"host": s[0],
+							"portFrom": s[1],
+							"portTo": s[2],
+						}
+						groups[s[0] + ":" + s[1]] = append(groups[s[0] + ":" + s[1]], val)
+					}
+				}
+			} else { // указан только домен - прокидываем все expose в контейнер
+				for _, address := range rc.Addresses {
+					val := map [string] interface{} {
+						"container": v,
+						"host": s[0],
+						"portFrom": address.Port,
+						"portTo": address.Port,
+					}
+					groups[s[0] + ":" + address.Port] = append(groups[s[0] + ":" + address.Port], val)
+				}
+			}
+
+		}
+	})
 }
 
 func groupByMulti(entries interface{}, key, sep string) (map[string][]interface{}, error) {
@@ -430,6 +483,7 @@ func newTemplate(name string) *template.Template {
 		"groupBy":                groupBy,
 		"groupByKeys":            groupByKeys,
 		"groupByMulti":           groupByMulti,
+		"groupForNginx":          groupForNginx,
 		"groupByLabel":           groupByLabel,
 		"hasPrefix":              hasPrefix,
 		"hasSuffix":              hasSuffix,
@@ -444,6 +498,7 @@ func newTemplate(name string) *template.Template {
 		"sha1":                   hashSha1,
 		"split":                  strings.Split,
 		"splitN":                 strings.SplitN,
+		"splitC":                 splitC,
 		"trimPrefix":             trimPrefix,
 		"trimSuffix":             trimSuffix,
 		"trim":                   trim,
