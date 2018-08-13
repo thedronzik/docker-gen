@@ -9,5 +9,5 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - ./templates/nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl
-      - /etc/nginx/conf.d
+      - /etc/nginx/conf.d/:/etc/nginx/conf.d/
       - /usr/sbin/nginx:/etc/init.d/nginx:ro

@@ -96,8 +96,6 @@ func groupForNginx(entries interface{}, key, sep string) (map[string][]interface
 			s := strings.Split(item, ":")
 			rc := v.(RuntimeContainer)
 
-			fmt.Println(s)
-			fmt.Println(rc.Addresses)
 			//если указан только порт биндинга
 			if len(s) == 2 {
 				s = append(s, s[1])
