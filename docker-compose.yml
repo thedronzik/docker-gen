@@ -5,9 +5,8 @@ services:
   dockergen:
     image: thedronzik/docker-gen
     container_name: dockergen
-    command: -watch -notify "/etc/init.d/nginx -s reload" /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/docker-gen.conf
+    command: -watch /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/docker-gen.conf
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - ./templates/nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl
       - /etc/nginx/conf.d/:/etc/nginx/conf.d/
-      - /usr/sbin/nginx:/etc/init.d/nginx:ro

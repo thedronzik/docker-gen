@@ -1,8 +1,8 @@
 server {
 	listen 80 default_server;
 	server_name _; # This is just an invalid value which will never trigger on a real hostname.
-	error_log /proc/self/fd/2;
-	access_log /proc/self/fd/1;
+#	error_log /proc/self/fd/2;
+#	access_log /proc/self/fd/1;
 	return 503;
 }
 
@@ -37,8 +37,8 @@ server {
 	server_name {{ $host }};
 	listen {{ $port }};
 	proxy_buffering off;
-	error_log /proc/self/fd/2;
-	access_log /proc/self/fd/1;
+	error_log /var/log/nginx/{{ $host }}_{{ $port }}.error.log;
+	access_log /var/log/nginx/{{ $host }}_{{ $port }}.access.log;
 
 	location / {
 		proxy_pass http://{{ trim $host }}_{{trim  $port }};
