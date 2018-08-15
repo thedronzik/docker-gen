@@ -5,6 +5,7 @@ services:
   dockergen:
     image: thedronzik/docker-gen
     container_name: dockergen
+    restart: always
     command: -watch /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/docker-gen.conf
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro

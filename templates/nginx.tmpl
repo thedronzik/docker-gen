@@ -1,10 +1,10 @@
-server {
-	listen 80 default_server;
-	server_name _; # This is just an invalid value which will never trigger on a real hostname.
+#server {
+#	listen 80 default_server;
+#	server_name _; # This is just an invalid value which will never trigger on a real hostname.
 #	error_log /proc/self/fd/2;
 #	access_log /proc/self/fd/1;
-	return 503;
-}
+#	return 503;
+#}
 
 {{ range $upstream, $containers := groupForNginx $ "Env.VIRTUAL_HOST" "," }}
 
